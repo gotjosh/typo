@@ -28,7 +28,7 @@ class Admin::ContentController < Admin::BaseController
   end
 
   def merge_articles
-    # debugger
+
     @article = Article.find(params[:id])
 
     unless @article.access_by? current_user || current_user.admin?
@@ -37,7 +37,6 @@ class Admin::ContentController < Admin::BaseController
     end
 
     if merged_article = @article.merge_with(params[:merge_with])
-      debugger
         flash[:notice] = _('Article was successfully merged')
         redirect_to :id => merged_article.id, :action => 'edit'
     else
