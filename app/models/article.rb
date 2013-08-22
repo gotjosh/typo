@@ -75,8 +75,6 @@ class Article < Content
     other_article = Article.find_by_id(other_article_id)
     return false unless other_article || self == other_article
 
-    debugger
-
     merged_article = Article.get_or_build_article.tap do |article|
       article.user_id = self.user_id || other_article.user_id
       article.title = self.title || other_article.title
