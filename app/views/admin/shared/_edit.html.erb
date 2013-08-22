@@ -4,3 +4,19 @@
   <%= render :partial => "form" %>
 
 <% end %>
+
+<% if controller.action_name.include?('edit') && current_user.admin? %>
+<%= form_tag(merge_articles_path(:id => @article.id), :id => 'merge_article_form', :class => 'form-horizontal') %>
+  <h4>Merge Articles</h4>
+  <div class="control-group">
+    <label class="control-label">Article ID</label>
+    <div class="controls">
+      <%= text_field :merge_with, '' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
+      <%= submit_tag 'Merge' %>
+    </div>
+  </div>
+<% end %>

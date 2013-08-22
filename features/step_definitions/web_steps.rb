@@ -43,6 +43,62 @@ Given /^the blog is set up$/ do
                 :state => 'active'})
 end
 
+Given /^the following comments exist for an article titled "(.*?)" created by the user named "(.*?)":$/ do |ar_title,username,table|
+  a = Article.find_by_title(ar_title)
+  u = User.find_by_login(username)
+  table.hashes.map do |comment|
+    Comment.create(
+        :user_id => u.id,
+        :article_id => a.id,
+        :body => comment[:body],
+        :published => comment[:published],
+        :state => comment[:state],
+        :author => u.name
+      )
+  end
+end
+
+Given /^I log in with "([^"]*)" as username and "([^"]*)" as password$/ do |username, password|
+  visit '/accounts/login'
+  fill_in 'user_login', :with => username
+  fill_in 'user_password', :with => password
+  click_button 'Login'
+  if page.respond_to? :should
+    page.should have_content('Login successful')
+  else
+    assert page.has_content?('Login successful')
+  end
+end
+
+Given /^the following articles exist:$/ do |table|
+  table.hashes.map do |article|
+      Article.create(
+        :id => article[:id],
+        :title => article[:title],
+        :body => article[:body],
+        :user_id => User.find_by_login(article[:author]).id,
+        :state => article[:state],
+      )
+    end
+end
+
+Then /^debugger$/ do
+  breakpoint
+end
+
+Given /^the following users exist:$/ do |table|
+  table.hashes.map do |user|
+      User.create(
+        :login => user[:login],
+        :password => user[:password],
+        :email => user[:email],
+        :profile_id => user[:profile_id],
+        :name => user[:name],
+        :state => user[:state]
+      )
+    end
+end
+
 And /^I am logged into the admin panel$/ do
   visit '/accounts/login'
   fill_in 'user_login', :with => 'admin'
@@ -79,6 +135,11 @@ end
 
 When /^(?:|I )follow "([^"]*)"$/ do |link|
   click_link(link)
+end
+
+When /^(?:|I )fill in "([^"]*)" with the id of the article titled "([^"]*)"$/ do |field, value|
+  article = Article.find_by_title(value)
+  fill_in(field, :with => article.id)
 end
 
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"$/ do |field, value|
@@ -250,7 +311,7 @@ Then /^the "([^"]*)" checkbox(?: within (.*))? should not be checked$/ do |label
     end
   end
 end
- 
+
 Then /^(?:|I )should be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
   if current_path.respond_to? :should
@@ -264,8 +325,8 @@ Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
   query = URI.parse(current_url).query
   actual_params = query ? CGI.parse(query) : {}
   expected_params = {}
-  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')} 
-  
+  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')}
+
   if actual_params.respond_to? :should
     actual_params.should == expected_params
   else

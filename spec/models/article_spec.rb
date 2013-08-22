@@ -184,25 +184,25 @@ describe Article do
   ### XXX: Should we have a test here?
   it "test_send_multiple_pings" do
   end
-  
+
   describe "Testing redirects" do
     it "a new published article gets a redirect" do
       a = Article.create(:title => "Some title", :body => "some text", :published => true)
       a.redirects.first.should_not be_nil
       a.redirects.first.to_path.should == a.permalink_url
     end
-    
-    it "a new unpublished article should not get a redirect" do 
+
+    it "a new unpublished article should not get a redirect" do
       a = Article.create(:title => "Some title", :body => "some text", :published => false)
       a.redirects.first.should be_nil
     end
-    
+
     it "Changin a published article permalink url should only change the to redirection" do
       a = Article.create(:title => "Some title", :body => "some text", :published => true)
       a.redirects.first.should_not be_nil
       a.redirects.first.to_path.should == a.permalink_url
       r  = a.redirects.first.from_path
-      
+
       a.permalink = "some-new-permalink"
       a.save
       a.redirects.first.should_not be_nil
@@ -501,6 +501,34 @@ describe Article do
     assert_equal(true, a.pings_closed?)
   end
 
+  describe "#merge_with(other_article_id)" do
+    it "should merge an article" do
+      ar1 = Factory(:article)
+      ar2 = Factory(:article)
+      ar3 = ar1.merge_with(ar2.id)
+      ar3.should be_a(Article)
+      ar3.should_not be(ar1)
+      ar3.should_not be(ar2)
+      ar3.body.should eql(ar1.body + "\n" +ar2.body)
+      ar3.author.should eql(ar1.author)
+    end
+
+    it "should merge the comments" do
+      ar1 = Factory(:article)
+      ar2 = Factory(:article)
+      Factory(:comment, :article => ar1)
+      Factory(:comment, :article => ar1)
+      Factory(:comment, :article => ar1)
+      Factory(:comment, :article => ar1)
+
+      Factory(:comment, :article => ar2)
+      Factory(:comment, :article => ar2)
+
+      ar3 = ar1.merge_with(ar2.id)
+      ar3.comments.length.should eql(6)
+    end
+  end
+
   describe '#published_at_like' do
     before do
       # Note: these choices of times depend on no other articles within
@@ -571,7 +599,7 @@ describe Article do
     describe "#find_by_permalink" do
       it "uses UTC to determine correct day" do
         @a.save
-        a = Article.find_by_permalink :year => 2011, :month => 2, :day => 21, :permalink => 'a-big-article' 
+        a = Article.find_by_permalink :year => 2011, :month => 2, :day => 21, :permalink => 'a-big-article'
         a.should == @a
       end
     end
@@ -592,7 +620,7 @@ describe Article do
     describe "#find_by_permalink" do
       it "uses UTC to determine correct day" do
         @a.save
-        a = Article.find_by_permalink :year => 2011, :month => 2, :day => 22, :permalink => 'a-big-article' 
+        a = Article.find_by_permalink :year => 2011, :month => 2, :day => 22, :permalink => 'a-big-article'
         a.should == @a
       end
     end

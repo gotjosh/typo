@@ -71,6 +71,30 @@ class Article < Content
     end
   end
 
+  def merge_with(other_article_id)
+    other_article = Article.find_by_id(other_article_id)
+    return false unless other_article || self == other_article
+
+    debugger
+
+    merged_article = Article.get_or_build_article.tap do |article|
+      article.user_id = self.user_id || other_article.user_id
+      article.title = self.title || other_article.title
+      article.body = self.body + "\n" + other_article.body
+      article.comments = self.comments.concat(other_article.comments)
+    end
+
+    # self.body << other_article.body unless other_article.body.empty?
+
+    # self.comments << other_article.comments
+
+    other_article.delete
+    self.delete
+
+    merged_article.save
+    merged_article
+  end
+
   def set_permalink
     return if self.state == 'draft'
     self.permalink = self.title.to_permalink if self.permalink.nil? or self.permalink.empty?
@@ -104,10 +128,10 @@ class Article < Content
     end
 
     def search_with_pagination(search_hash, paginate_hash)
-      
+
       state = (search_hash[:state] and ["no_draft", "drafts", "published", "withdrawn", "pending"].include? search_hash[:state]) ? search_hash[:state] : 'no_draft'
-      
-      
+
+
       list_function  = ["Article.#{state}"] + function_search_no_draft(search_hash)
 
       if search_hash[:category] and search_hash[:category].to_i > 0
