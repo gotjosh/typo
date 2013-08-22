@@ -65,7 +65,6 @@ Feature: Merge Articles
     Then I press "Merge"
     And I should see "Article was successfully merged"
     When I go to the home page
-    And show me the page
     When I follow "Foobar"
     Then I should see "6 comments"
 
