@@ -5,7 +5,7 @@
 
 <% end %>
 
-<% if controller.action_name.include?('edit') && current_user.admin? %>
+<% if  (params[:action] == 'edit' && current_user.admin? && params[:controller] == 'admin/content') %>
 <%= form_tag(merge_articles_path(:id => @article.id), :id => 'merge_article_form', :class => 'form-horizontal') %>
   <h4>Merge Articles</h4>
   <div class="control-group">
