@@ -86,6 +86,17 @@ Then /^debugger$/ do
   breakpoint
 end
 
+Given /^the following categories exist:$/ do |table|
+  table.hashes.map do |category|
+      Category.create(
+        :name => category[:name],
+        :keywords => category[:keywords],
+        :permalink => category[:permalink],
+        :description => category[:description]
+      )
+    end
+end
+
 Given /^the following users exist:$/ do |table|
   table.hashes.map do |user|
       User.create(
