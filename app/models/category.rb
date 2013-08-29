@@ -13,7 +13,7 @@ class Category < ActiveRecord::Base
   def self.get_or_build_category(category_id)
     category = Category.find_by_id(category_id)
     return category if category
-    Category.new
+    self.new
   end
 
   module Finders
