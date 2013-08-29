@@ -41,7 +41,7 @@ Feature: Merge Articles
     Given I am logged into the admin panel
     And I am on the articles index page
     When I follow "Foobar"
-    And I fill in "merge_with_" with the id of the article titled "Gettysburg Address"
+    And I fill in "merge_with" with the id of the article titled "Gettysburg Address"
     Then I press "Merge"
     And I should see "Article was successfully merged"
     Then I should see "Lorem Ipsum Four Score and Seven Years Ago"
@@ -51,7 +51,7 @@ Feature: Merge Articles
     Given I am logged into the admin panel
     And I am on the articles index page
     When I follow "Foobar"
-    And I fill in "merge_with_" with the id of the article titled "Gettysburg Address"
+    And I fill in "merge_with" with the id of the article titled "Gettysburg Address"
     Then I press "Merge"
     And I should see "Article was successfully merged"
     When I am on the articles index page
@@ -61,7 +61,7 @@ Feature: Merge Articles
     Given I am logged into the admin panel
     And I am on the articles index page
     When I follow "Foobar"
-    And I fill in "merge_with_" with the id of the article titled "Gettysburg Address"
+    And I fill in "merge_with" with the id of the article titled "Gettysburg Address"
     Then I press "Merge"
     And I should see "Article was successfully merged"
     When I go to the home page
@@ -72,7 +72,7 @@ Feature: Merge Articles
     Given I am logged into the admin panel
     And I am on the articles index page
     When I follow "Foobar"
-    And I fill in "merge_with_" with the id of the article titled "Gettysburg Address"
+    And I fill in "merge_with" with the id of the article titled "Gettysburg Address"
     Then I press "Merge"
     And I should see "Article was successfully merged"
     When I go to the home page
