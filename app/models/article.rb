@@ -301,7 +301,9 @@ class Article < Content
   end
 
   def self.get_or_build_article id = nil
-    return Article.find(id) if id
+    article = Article.find_by_id(id)
+    return article if article
+
     article = Article.new.tap do |art|
       art.allow_comments = art.blog.default_allow_comments
       art.allow_pings = art.blog.default_allow_pings
